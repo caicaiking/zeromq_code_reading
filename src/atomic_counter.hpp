@@ -49,6 +49,8 @@ namespace zmq
     //  This class represents an integer that can be incremented/decremented
     //  in atomic fashion.
 
+    //这个类可以使用std::atomic<T> 来代替了
+
     class atomic_counter_t
     {
     public:

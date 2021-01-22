@@ -46,6 +46,7 @@ namespace zmq
 {
 
     //  This class encapsulates several atomic operations on pointers.
+    //这个类可以使用std::atomic<T> 来代替了
 
     template <typename T> class atomic_ptr_t
     {

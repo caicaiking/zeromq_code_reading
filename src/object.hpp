@@ -29,96 +29,98 @@ namespace zmq
 {
     //  Base class for all objects that participate in inter-thread
     //  communication.
+    /**!
+     * 
+     * 参与内部通信的所有object的基类
+     * 
+     * */
 
     class object_t
     {
     public:
+        object_t(class ctx_t *ctx_, uint32_t tid_);
+        object_t(object_t *parent_);
+        virtual ~object_t();
 
-        object_t (class ctx_t *ctx_, uint32_t tid_);
-        object_t (object_t *parent_);
-        virtual ~object_t ();
-
-        uint32_t get_tid ();
-        ctx_t *get_ctx ();
-        void process_command (struct command_t &cmd_);
+        uint32_t get_tid();
+        ctx_t *get_ctx();
+        void process_command(struct command_t &cmd_);
 
     protected:
-
         //  Using following function, socket is able to access global
         //  repository of inproc endpoints.
-        int register_endpoint (const char *addr_, class socket_base_t *socket_);
-        void unregister_endpoints (class socket_base_t *socket_);
-        class socket_base_t *find_endpoint (const char *addr_);
+        int register_endpoint(const char *addr_, class socket_base_t *socket_);
+        void unregister_endpoints(class socket_base_t *socket_);
+        class socket_base_t *find_endpoint(const char *addr_);
 
         //  Logs an message.
-        void log (zmq_msg_t *msg_);
+        void log(zmq_msg_t *msg_);
 
         //  Chooses least loaded I/O thread.
-        class io_thread_t *choose_io_thread (uint64_t affinity_);
+        class io_thread_t *choose_io_thread(uint64_t affinity_);
 
         //  Zombify particular socket. In other words, pass the ownership to
         //  the context.
-        void zombify_socket (class socket_base_t *socket_);
+        void zombify_socket(class socket_base_t *socket_);
 
         //  Derived object can use these functions to send commands
         //  to other objects.
-        void send_stop ();
-        void send_plug (class own_t *destination_,
-            bool inc_seqnum_ = true);
-        void send_own (class own_t *destination_,
-            class own_t *object_);
-        void send_attach (class session_t *destination_,
-             struct i_engine *engine_, const blob_t &peer_identity_,
-             bool inc_seqnum_ = true);
-        void send_bind (class own_t *destination_,
-             class reader_t *in_pipe_, class writer_t *out_pipe_,
-             const blob_t &peer_identity_, bool inc_seqnum_ = true);
-        void send_activate_reader (class reader_t *destination_);
-        void send_activate_writer (class writer_t *destination_,
-             uint64_t msgs_read_);
-        void send_pipe_term (class writer_t *destination_);
-        void send_pipe_term_ack (class reader_t *destination_);
-        void send_term_req (class own_t *destination_,
-            class own_t *object_);
-        void send_term (class own_t *destination_, int linger_);
-        void send_term_ack (class own_t *destination_);
+        void send_stop();
+        void send_plug(class own_t *destination_,
+                       bool inc_seqnum_ = true);
+        void send_own(class own_t *destination_,
+                      class own_t *object_);
+        void send_attach(class session_t *destination_,
+                         struct i_engine *engine_, const blob_t &peer_identity_,
+                         bool inc_seqnum_ = true);
+        void send_bind(class own_t *destination_,
+                       class reader_t *in_pipe_, class writer_t *out_pipe_,
+                       const blob_t &peer_identity_, bool inc_seqnum_ = true);
+        void send_activate_reader(class reader_t *destination_);
+        void send_activate_writer(class writer_t *destination_,
+                                  uint64_t msgs_read_);
+        void send_pipe_term(class writer_t *destination_);
+        void send_pipe_term_ack(class reader_t *destination_);
+        void send_term_req(class own_t *destination_,
+                           class own_t *object_);
+        void send_term(class own_t *destination_, int linger_);
+        void send_term_ack(class own_t *destination_);
 
         //  These handlers can be overloaded by the derived objects. They are
         //  called when command arrives from another thread.
-        virtual void process_stop ();
-        virtual void process_plug ();
-        virtual void process_own (class own_t *object_);
-        virtual void process_attach (struct i_engine *engine_,
-            const blob_t &peer_identity_);
-        virtual void process_bind (class reader_t *in_pipe_,
-            class writer_t *out_pipe_, const blob_t &peer_identity_);
-        virtual void process_activate_reader ();
-        virtual void process_activate_writer (uint64_t msgs_read_);
-        virtual void process_pipe_term ();
-        virtual void process_pipe_term_ack ();
-        virtual void process_term_req (class own_t *object_);
-        virtual void process_term (int linger_);
-        virtual void process_term_ack ();
+        virtual void process_stop();
+        virtual void process_plug();
+        virtual void process_own(class own_t *object_);
+        virtual void process_attach(struct i_engine *engine_,
+                                    const blob_t &peer_identity_);
+        virtual void process_bind(class reader_t *in_pipe_,
+                                  class writer_t *out_pipe_, const blob_t &peer_identity_);
+        virtual void process_activate_reader();
+        virtual void process_activate_writer(uint64_t msgs_read_);
+        virtual void process_pipe_term();
+        virtual void process_pipe_term_ack();
+        virtual void process_term_req(class own_t *object_);
+        virtual void process_term(int linger_);
+        virtual void process_term_ack();
 
         //  Special handler called after a command that requires a seqnum
         //  was processed. The implementation should catch up with its counter
         //  of processed commands here.
-        virtual void process_seqnum ();
+        virtual void process_seqnum();
 
     private:
-
         //  Context provides access to the global state.
-        class ctx_t *ctx;
+        class ctx_t *ctx; //提供全局状态的变量
 
         //  Thread ID of the thread the object belongs to.
-        uint32_t tid;
+        uint32_t tid; //在 ctx里面slot的位置,也可以说是thread id.
 
-        void send_command (command_t &cmd_);
+        void send_command(command_t &cmd_); //发送命令
 
-        object_t (const object_t&);
-        void operator = (const object_t&);
+        object_t(const object_t &);
+        void operator=(const object_t &);
     };
 
-}
+} // namespace zmq
 
 #endif

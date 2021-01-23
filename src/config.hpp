@@ -25,15 +25,15 @@ namespace zmq
 
     //  Compile-time settings.
 
-    enum 
+    enum
     {
         //  Maximum number of sockets that can be opened at the same time.
-        max_sockets = 512,
+        max_sockets = 512, //可以创建最大的socket的数量
 
         //  Number of new messages in message pipe needed to trigger new memory
         //  allocation. Setting this parameter to 256 decreases the impact of
         //  memory allocation by approximately 99.6%
-        message_pipe_granularity = 256,
+        message_pipe_granularity = 256, // Message管道的颗粒度
 
         //  Determines how often does socket poll for new commands when it
         //  still has unprocessed messages to handle. Thus, if it is set to 100,
@@ -85,6 +85,6 @@ namespace zmq
         pgm_max_tpdu = 1500
     };
 
-}
+} // namespace zmq
 
 #endif

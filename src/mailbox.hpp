@@ -31,31 +31,32 @@
 namespace zmq
 {
 
+    /**!
+     * mailbox 主要就是创建了读写的句柄, 具有读取命令和发送命令的底层功能.
+     * */
     class mailbox_t
     {
     public:
+        mailbox_t();
+        ~mailbox_t();
 
-        mailbox_t ();
-        ~mailbox_t ();
+        fd_t get_fd();
+        void send(const command_t &cmd_);
+        int recv(command_t *cmd_, bool block_);
 
-        fd_t get_fd ();
-        void send (const command_t &cmd_);
-        int recv (command_t *cmd_, bool block_);
-        
     private:
-
         //  Write & read end of the socketpair.
         fd_t w;
         fd_t r;
 
         //  Platform-dependent function to create a socketpair.
-        static int make_socketpair (fd_t *r_, fd_t *w_);
+        static int make_socketpair(fd_t *r_, fd_t *w_);
 
         //  Disable copying of mailbox_t object.
-        mailbox_t (const mailbox_t&);
-        void operator = (const mailbox_t&);
+        mailbox_t(const mailbox_t &);
+        void operator=(const mailbox_t &);
     };
 
-}
+} // namespace zmq
 
 #endif

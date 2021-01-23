@@ -1,0 +1,26 @@
+{
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "files.exclude": {
+        "src/array.hpp": true,
+        "src/atomic_counter.hpp": true,
+        "src/atomic_ptr.hpp": true,
+        "src/blob.hpp": true,
+        "src/clock.cpp": true,
+        "src/clock.hpp": true,
+        "src/command.hpp": true,
+        "src/command.cpp": true,
+        "src/ctx.hpp": true,
+        "src/ctx.cpp": true,
+        "src/fd.hpp": true,
+        "src/mailbox.hpp": true,
+        "src/mailbox.cpp": true
+    },
+    "workspace.isHidden": true,
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.defines": [
+        "ZMQ_HAVE_LINUX"
+    ]
+}

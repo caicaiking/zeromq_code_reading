@@ -40,59 +40,57 @@ namespace zmq
 
     //  Context object encapsulates all the global state associated with
     //  the library.
-    
+
     class ctx_t
     {
     public:
-
         //  Create the context object. The argument specifies the size
         //  of I/O thread pool to create.
-        ctx_t (uint32_t io_threads_);
+        ctx_t(uint32_t io_threads_);
 
         //  This function is called when user invokes zmq_term. If there are
         //  no more sockets open it'll cause all the infrastructure to be shut
         //  down. If there are open sockets still, the deallocation happens
         //  after the last one is closed.
-        int terminate ();
+        int terminate();
 
         //  Create a socket.
-        class socket_base_t *create_socket (int type_);
+        class socket_base_t *create_socket(int type_);
 
         //  Make socket a zombie.
-        void zombify_socket (socket_base_t *socket_);
+        void zombify_socket(socket_base_t *socket_);
 
         //  Send command to the destination thread.
-        void send_command (uint32_t tid_, const command_t &command_);
+        void send_command(uint32_t tid_, const command_t &command_);
 
         //  Returns the I/O thread that is the least busy at the moment.
         //  Affinity specifies which I/O threads are eligible (0 = all).
         //  Returns NULL is no I/O thread is available.
-        class io_thread_t *choose_io_thread (uint64_t affinity_);
+        class io_thread_t *choose_io_thread(uint64_t affinity_);
 
         //  Management of inproc endpoints.
-        int register_endpoint (const char *addr_, class socket_base_t *socket_);
-        void unregister_endpoints (class socket_base_t *socket_);
-        class socket_base_t *find_endpoint (const char *addr_);
+        int register_endpoint(const char *addr_, class socket_base_t *socket_);
+        void unregister_endpoints(class socket_base_t *socket_);
+        class socket_base_t *find_endpoint(const char *addr_);
 
         //  Logging.
-        void log (zmq_msg_t *msg_);
+        void log(zmq_msg_t *msg_);
 
     private:
-
-        ~ctx_t ();
+        ~ctx_t();
 
         //  Sockets belonging to this context.
-        typedef array_t <socket_base_t> sockets_t;
+        typedef array_t<socket_base_t> sockets_t;
         sockets_t sockets;
 
         //  List of sockets that were already closed but not yet deallocated.
         //  These sockets still have some pipes and I/O objects attached.
-        typedef std::vector <socket_base_t*> zombies_t;
+        typedef std::vector<socket_base_t *> zombies_t;
         zombies_t zombies;
 
-        //  List of unused thread slots.
-        typedef std::vector <uint32_t> emtpy_slots_t;
-        emtpy_slots_t empty_slots;
+        //  List of unused thread mailbox_slots.
+        typedef std::vector<uint32_t> emtpy_slots_t;
+        emtpy_slots_t unused_mailbox_slots;
 
         //  If true, shutdown thread wants to be informed when there are no
         //  more open sockets. Do so by posting no_sockets_sync semaphore.
@@ -104,25 +102,25 @@ namespace zmq
         semaphore_t no_sockets_sync;
 
         //  Synchronisation of accesses to global slot-related data:
-        //  sockets, zombies, empty_slots, terminated. It also synchronises
-        //  access to zombie sockets as such (as oposed to slots) and provides
+        //  sockets, zombies, unused_mailbox_slots, terminated. It also synchronises
+        //  access to zombie sockets as such (as oposed to mailbox_slots) and provides
         //  a memory barrier to ensure that all CPU cores see the same data.
         mutex_t slot_sync;
 
         //  This function attempts to deallocate as many zombie sockets as
         //  possible. It must be called within a slot_sync critical section.
-        void dezombify ();
+        void dezombify();
 
         //  I/O threads.
-        typedef std::vector <class io_thread_t*> io_threads_t;
+        typedef std::vector<class io_thread_t *> io_threads_t;
         io_threads_t io_threads;
 
         //  Array of pointers to mailboxes for both application and I/O threads.
-        uint32_t slot_count;
-        mailbox_t **slots;
+        uint32_t mailbox_slot_count;
+        mailbox_t **mailbox_slots;
 
         //  List of inproc endpoints within this context.
-        typedef std::map <std::string, class socket_base_t*> endpoints_t;
+        typedef std::map<std::string, class socket_base_t *> endpoints_t;
         endpoints_t endpoints;
 
         //  Synchronisation of access to the list of inproc endpoints.
@@ -133,11 +131,10 @@ namespace zmq
         class socket_base_t *log_socket;
         mutex_t log_sync;
 
-        ctx_t (const ctx_t&);
-        void operator = (const ctx_t&);
+        ctx_t(const ctx_t &);
+        void operator=(const ctx_t &);
     };
-    
-}
+
+} // namespace zmq
 
 #endif
-

@@ -37,38 +37,36 @@ namespace zmq
     class io_thread_t : public object_t, public i_poll_events
     {
     public:
-
-        io_thread_t (class ctx_t *ctx_, uint32_t tid_);
+        io_thread_t(class ctx_t *ctx_, uint32_t tid_);
 
         //  Clean-up. If the thread was started, it's neccessary to call 'stop'
         //  before invoking destructor. Otherwise the destructor would hang up.
-        ~io_thread_t ();
+        ~io_thread_t();
 
         //  Launch the physical thread.
-        void start ();
+        void start();
 
         //  Ask underlying thread to stop.
-        void stop ();
+        void stop();
 
         //  Returns mailbox associated with this I/O thread.
-        mailbox_t *get_mailbox ();
+        mailbox_t *get_mailbox();
 
         //  i_poll_events implementation.
-        void in_event ();
-        void out_event ();
-        void timer_event (int id_);
+        void in_event();
+        void out_event();
+        void timer_event(int id_);
 
         //  Used by io_objects to retrieve the assciated poller object.
-        poller_t *get_poller ();
+        poller_t *get_poller();
 
         //  Command handlers.
-        void process_stop ();
+        void process_stop() override;
 
         //  Returns load experienced by the I/O thread.
-        int get_load ();
+        int get_load();
 
     private:
-
         //  I/O thread accesses incoming commands via this mailbox.
         mailbox_t mailbox;
 
@@ -79,6 +77,6 @@ namespace zmq
         poller_t *poller;
     };
 
-}
+} // namespace zmq
 
 #endif

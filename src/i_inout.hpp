@@ -29,21 +29,21 @@ namespace zmq
 
     struct i_inout
     {
-        virtual ~i_inout () {}
+        virtual ~i_inout() {}
 
         //  Engine asks for a message to send to the network.
-        virtual bool read (::zmq_msg_t *msg_) = 0;
+        virtual bool read(::zmq_msg_t *msg_) = 0;
 
         //  Engine received message from the network and sends it further on.
-        virtual bool write (::zmq_msg_t *msg_) = 0;
+        virtual bool write(::zmq_msg_t *msg_) = 0;
 
         //  Flush all the previously written messages.
-        virtual void flush () = 0;
+        virtual void flush() = 0;
 
         //  Engine is dead. Drop all the references to it.
-        virtual void detach () = 0;
+        virtual void detach() = 0;
     };
 
-}
+} // namespace zmq
 
 #endif

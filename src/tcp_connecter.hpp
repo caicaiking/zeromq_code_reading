@@ -34,36 +34,38 @@ namespace zmq
 {
 
     //  The class encapsulating simple TCP listening socket.
-
+    /**!
+     * 
+     * 这个类封装了一个简单的tcp, 用于连接. 注释好像有错误.
+     * 
+     * */
     class tcp_connecter_t
     {
     public:
-
-        tcp_connecter_t ();
-        ~tcp_connecter_t ();
+        tcp_connecter_t();
+        ~tcp_connecter_t();
 
         //  Set address to connect to.
-        int set_address (const char *protocol, const char *addr_);
+        int set_address(const char *protocol, const char *addr_);
 
         //  Open TCP connecting socket. Address is in
         //  <hostname>:<port-number> format. Returns -1 in case of error,
         //  0 if connect was successfull immediately and 1 if async connect
         //  was launched.
-        int open ();
+        int open();
 
         //  Close the connecting socket.
-        int close ();
+        int close();
 
         //  Get the file descriptor to poll on to get notified about
         //  connection success.
-        fd_t get_fd ();
+        fd_t get_fd();
 
         //  Get the file descriptor of newly created connection. Returns
         //  retired_fd if the connection was unsuccessfull.
-        fd_t connect ();
+        fd_t connect();
 
     private:
-
         //  Address to connect to.
         sockaddr_storage addr;
         socklen_t addr_len;
@@ -71,10 +73,10 @@ namespace zmq
         //  Underlying socket.
         fd_t s;
 
-        tcp_connecter_t (const tcp_connecter_t&);
-        void operator = (const tcp_connecter_t&);
+        tcp_connecter_t(const tcp_connecter_t &);
+        void operator=(const tcp_connecter_t &);
     };
 
-}
+} // namespace zmq
 
 #endif

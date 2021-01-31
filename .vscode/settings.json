@@ -54,7 +54,9 @@
         "src/io_thread.hpp": true,
         "src/io_thread.cpp": true,
         "src/i_poll_events.hpp": true,
-        "src/semaphore.hpp": true
+        "src/semaphore.hpp": true,
+        "src/io_object.cpp": true,
+        "src/io_object.hpp": true
     },
     "workspace.isHidden": true,
     "C_Cpp.default.cppStandard": "c++17",
